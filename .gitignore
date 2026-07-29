@@ -1,0 +1,17 @@
+# Paper source — MUST stay out of the repo. HAMS.tex contains the real author
+# block (commented out) plus the funding/acknowledgement section. Committing it
+# would put author names in the public git history permanently.
+/paper
+
+# Scratch / OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+.idea/
+
+# Original, un-scrubbed media. Only commit metadata-stripped assets under
+# static/images and static/video.
+/raw
+*.orig.*

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ===================================================================== -->
+<!-- ANONYMITY NOTICE — DOUBLE-BLIND REVIEW                                -->
+<!-- Do not add author names, affiliations, funding sources, lab or        -->
+<!-- personal URLs, acknowledgements, analytics, or third-party embeds     -->
+<!-- (fonts/CDNs/video hosts) to this page until camera-ready.             -->
+<!-- Self-citations must stay unnamed: refer to prior systems generically  -->
+<!-- ("a gantry-based disassembly cell"), never by their project names.    -->
+<!-- ===================================================================== -->
+
+<title>GOLEM: Modular Humanoid Autonomy Towards Electric Vehicle Battery Disassembly</title>
+<meta name="description" content="GOLEM (Generalized Open Library of Embodied Modules): an open-source, modular system architecture for humanoid EV battery disassembly.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="GOLEM: Modular Humanoid Autonomy Towards EV Battery Disassembly">
+<meta property="og:description" content="An open-source, modular system architecture for humanoid EV battery disassembly.">
+<meta property="og:image" content="static/images/teaser.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦾</text></svg>">
+
+<style>
+  :root {
+    --bg:      #ffffff;
+    --fg:      #14161a;
+    --muted:   #6b7280;
+    --faint:   #9aa1ab;
+    --rule:    #e6e8ec;
+    --panel:   #f7f8fa;
+    --accent:  #3b5bdb;
+    --maxw:    52rem;
+    --wide:    64rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:    #0e1013;
+      --fg:    #e8eaee;
+      --muted: #969ca7;
+      --faint: #6d747f;
+      --rule:  #24272d;
+      --panel: #16191e;
+      --accent:#8ea4f5;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Only the inline margins are set here: using the `margin` shorthand would
+     out-specify `section { margin: 4.5rem 0 }` and flatten every section gap. */
+  .wrap  { max-width: var(--maxw); margin-inline: auto; padding: 0 1.5rem; }
+  .wide  { max-width: var(--wide); margin-inline: auto; padding: 0 1.5rem; }
+
+  /* ---------- header ---------- */
+
+  header { padding: 5.5rem 0 0; text-align: center; }
+
+  h1 {
+    font-size: clamp(1.8rem, 4.6vw, 2.9rem);
+    line-height: 1.16;
+    letter-spacing: -0.022em;
+    font-weight: 700;
+    margin: 0 0 1.1rem;
+    text-wrap: balance;
+  }
+  h1 .acronym { white-space: nowrap; }
+
+  .byline {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 0.35rem;
+  }
+  .venue {
+    color: var(--faint);
+    font-size: 0.86rem;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  /* ---------- buttons ---------- */
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    margin: 2rem 0 0;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1.15rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--fg);
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color .15s, color .15s, transform .15s;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+  .btn[aria-disabled="true"] {
+    color: var(--faint);
+    pointer-events: none;
+    background: transparent;
+    border-style: dashed;
+  }
+  .btn svg { width: 1em; height: 1em; flex: none; }
+
+  /* ---------- sections ---------- */
+
+  section { margin: 4.5rem 0; }
+
+  h2 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  p { margin: 0 0 1.1rem; }
+  p:last-child { margin-bottom: 0; }
+
+  .abstract { text-align: justify; hyphens: auto; }
+
+  /* ---------- figures ---------- */
+
+  figure { margin: 0 0 2.75rem; }
+  figure:last-child { margin-bottom: 0; }
+
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+  figure.plot img {
+    border: 1px solid var(--rule);
+    background: #fff;
+    padding: 0.4rem;
+  }
+  figure.photo img { max-width: 30rem; margin: 0 auto; }
+
+  figcaption {
+    margin-top: 0.85rem;
+    font-size: 0.87rem;
+    line-height: 1.55;
+    color: var(--muted);
+    text-align: center;
+    max-width: 46rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  figcaption b { color: var(--fg); font-weight: 600; }
+
+  /* ---------- video placeholder ---------- */
+
+  .video-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border: 1px dashed var(--rule);
+    border-radius: 10px;
+    background: var(--panel);
+    display: grid;
+    place-content: center;
+    text-align: center;
+    gap: 0.4rem;
+  }
+  .video-frame .label { font-weight: 600; font-size: 0.98rem; }
+  .video-frame .sub   { color: var(--faint); font-size: 0.85rem; }
+  .video-frame video,
+  .video-frame iframe {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: 0; border-radius: 10px;
+  }
+
+  /* ---------- result numbers ---------- */
+
+  .ladder {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .rung {
+    background: var(--bg);
+    padding: 1.35rem 1.25rem;
+    text-align: center;
+  }
+  .rung .num {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+  }
+  .rung .lbl {
+    margin-top: 0.3rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--muted);
+  }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    margin: 6rem 0 3.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--rule);
+    text-align: center;
+    color: var(--faint);
+    font-size: 0.82rem;
+  }
+
+  @media (max-width: 40rem) {
+    body { font-size: 16px; }
+    header { padding-top: 3.5rem; }
+    section { margin: 3.25rem 0; }
+    .abstract { text-align: left; }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>
+      <span class="acronym">GOLEM:</span> Modular Humanoid Autonomy
+      Towards Electric&nbsp;Vehicle Battery&nbsp;Disassembly
+    </h1>
+    <p class="byline">Anonymous Authors</p>
+    <p class="venue">Under double-blind review &middot; Humanoids 2026</p>
+
+    <nav class="links">
+      <!-- Drop the ANONYMIZED, metadata-scrubbed PDF at static/paper.pdf -->
+      <a class="btn" href="static/paper.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <path d="M14 2v6h6"/>
+        </svg>
+        Paper
+      </a>
+      <a class="btn" href="https://github.com/golem-humanoid">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/>
+        </svg>
+        Code
+      </a>
+      <span class="btn" aria-disabled="true">Video &mdash; coming soon</span>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap">
+    <figure class="photo">
+      <img src="static/images/teaser.jpg" alt="A Unitree H1-2 humanoid standing at a Hyundai Ioniq 5 battery pack beside a gantry-mounted robot arm.">
+      <figcaption>
+        A Unitree H1-2 humanoid working alongside a gantry-based disassembly cell on a
+        Hyundai Ioniq&nbsp;5 battery pack. <b>GOLEM</b> augments automation infrastructure
+        designed around human workers with humanoid autonomy.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap">
+    <h2>Abstract</h2>
+    <div class="abstract">
+      <p>
+        Disassembling end-of-life electric vehicle (EV) battery packs is dull and dangerous
+        work, performed almost entirely by humans. We present <b>GOLEM</b> (Generalized Open
+        Library of Embodied Modules), an end-to-end, open-source system architecture for EV
+        battery disassembly with the Unitree H1-2 humanoid robot in which walking,
+        manipulation, dynamic stability, navigation, and spatial memory are independent
+        modules with abstract interfaces, so that methods are easily developed, interchanged,
+        and compared. GOLEM is deployed as a Docker-based ROS&nbsp;2 abstraction in which
+        MuJoCo and IsaacLab digital twins expose interfaces matching the physical robot.
+        GOLEM's composability and per-module customization enable development and
+        demonstration of humanoid EV battery disassembly, from simulation to reality.
+      </p>
+      <p>
+        GOLEM provides fair comparison between humanoid modules, enabling evaluation as a
+        <b>capability ladder</b>, in which one module is characterized at a time and added as
+        a rung: LiDAR-inertial navigation places the robot within 13.0&nbsp;cm of a 6&nbsp;m
+        goal; a learned standing controller recovers from external disturbances that
+        sampling-based lower-body MPC does not; and grasping loosened fasteners from a real
+        Hyundai Ioniq&nbsp;5 pack degrades from 97% tethered to 87% free-standing to 37%
+        under navigation-induced pose variance.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>Video</h2>
+    <div class="video-frame">
+      <!-- ================================================================
+           WHEN THE VIDEO IS READY: delete the two <div>s below and
+           uncomment the <video> tag. Self-host static/video/golem.mp4 —
+           do NOT embed YouTube/Vimeo, since the hosting account is a
+           deanonymization vector during review. Also scrub the mp4's
+           metadata first (creation tool, device, GPS, author tags).
+           ================================================================ -->
+      <!--
+      <video controls playsinline preload="metadata" poster="static/images/teaser.jpg">
+        <source src="static/video/golem.mp4" type="video/mp4">
+      </video>
+      -->
+      <div class="label">Video coming soon</div>
+      <div class="sub">Full system overview and hardware results</div>
+    </div>
+  </section>
+
+  <section class="wide">
+    <h2>System</h2>
+    <figure class="plot">
+      <img src="static/images/system.png" alt="GOLEM system diagram: physics engines, hardware interfaces, capabilities, and skills.">
+      <figcaption>
+        <b>Four interoperable, modular layers.</b> GOLEM connects <b>(1)</b> three physics
+        engines &mdash; the real world, MuJoCo, and PhysX via IsaacLab &mdash; with
+        <b>(2)</b> hardware interfaces for motor control, proprioception, and exteroception,
+        <b>(3)</b> core capabilities spanning learning- and planning-based bodily control,
+        navigation, and semantic object localization, and <b>(4)</b> skills for contact-rich,
+        precise manipulation and retrieval with spatial memory. Because the twins expose the
+        same ROS&nbsp;2/DDS interfaces as the physical robot, switching between simulation and
+        hardware amounts to selecting a DDS domain.
+      </figcaption>
+    </figure>
+  </section>
+
+  <section class="wide">
+    <h2>Results</h2>
+
+    <div class="ladder">
+      <div class="rung">
+        <div class="num">13.0 cm</div>
+        <div class="lbl">mean endpoint error<br>over a 6&nbsp;m walk-to-goal</div>
+      </div>
+      <div class="rung">
+        <div class="num">93%</div>
+        <div class="lbl">balance recovery under<br>push, learned vs. MPC</div>
+      </div>
+      <div class="rung">
+        <div class="num">97 &rarr; 87 &rarr; 37%</div>
+        <div class="lbl">real screw grasping across<br>three autonomy levels</div>
+      </div>
+    </div>
+
+    <figure class="plot">
+      <img src="static/images/navigation.png" alt="Scatter plot of navigation endpoint errors for a 6 metre walk-to-goal task.">
+      <figcaption>
+        <b>Navigation.</b> Six-meter start-to-goal walking accuracy from noisy initialization,
+        using a LiDAR-inertial odometry and Nav2 stack with an off-the-shelf walking policy.
+        This endpoint error defines the base-placement variance that downstream manipulation
+        must tolerate.
+      </figcaption>
+    </figure>
+
+    <figure class="plot">
+      <img src="static/images/stability_push.png" alt="Push force and center-of-mass margin traces comparing MJPC and ALMI standing controllers.">
+      <figcaption>
+        <b>Standing under external force: MPC vs. RL.</b> <b>(a)</b> An instrumented rod with a
+        six-axis load cell applies an oppositional force to the torso; <b>(b&ndash;c)</b>
+        balance is lost when the center-of-mass margin to the support polygon goes negative.
+        Both controllers show similar initial force adaptivity, but <b>(b)</b> sampling-based
+        MPC cannot recover and must be emergency-stopped, while <b>(c)</b> adversarial RL
+        recovers a positive margin.
+      </figcaption>
+    </figure>
+
+    <figure class="plot">
+      <img src="static/images/com_margin.png" alt="Box and scatter plot of center-of-mass margin across grasp synthesis methods, tasks, and autonomy levels.">
+      <figcaption>
+        <b>Stability is sensitive to the grasp synthesis method.</b> Episode-level
+        center-of-mass margin &mdash; the signed distance from the floor-projected
+        center-of-mass to the support polygon boundary &mdash; across simulated fridge opening
+        and simulated and real battery screw picking. Negative values indicate a recovery step
+        or a fall.
+      </figcaption>
+    </figure>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Anonymized project page for double-blind review. Please do not attempt to
+    deanonymize the authors.
+  </div>
+</footer>
+
+</body>
+</html>
